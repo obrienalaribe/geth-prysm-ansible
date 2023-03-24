@@ -1,4 +1,4 @@
-# Validation Cloud Coding Challenge
+# Geth Prsym Ansible Configuration Management
 
 ## About
 This repo has two folders:
