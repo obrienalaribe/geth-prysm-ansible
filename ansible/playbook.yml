@@ -1,0 +1,5 @@
+---
+- name: Provision Eth Node
+  hosts: my_eth_node
+  roles:
+    - eth

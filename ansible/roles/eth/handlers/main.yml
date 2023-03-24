@@ -1,0 +1,33 @@
+---
+- name: Restart geth service
+  become: true
+  systemd:
+    name: geth
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: Restart prysm service
+  become: true
+  systemd:
+    name: prysm
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: Restart prometheus service
+  become: true
+  systemd:
+    name: prometheus
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: Restart grafana-server service
+  become: true
+  systemd:
+    name: grafana-server
+    state: restarted
+    enabled: true
+    daemon_reload: true
+

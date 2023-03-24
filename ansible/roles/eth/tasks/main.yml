@@ -1,0 +1,102 @@
+---
+- name: Enable UFW firewall
+  become: true
+  community.general.ufw:
+    state: enabled
+
+- name: Add firewall rules
+  become: true
+  community.general.ufw:
+    rule: allow
+    port: '{{ item.port }}'
+    proto: tcp
+    src: '{{ monitoring_ip }}'
+  loop:
+    - { name: ssh, port: 22}
+    - { name: prometheus, port: 9090}
+    - { name: grafana, port: 3000}
+    - { name: geth_rpc, port: 8545}
+
+- name: Create linux user vacloud
+  become: true
+  user:
+    name: vacloud
+    state: present
+    shell: /bin/false
+    system: yes
+    createhome: yes
+
+- name: Install required packages
+  become: true
+  apt:
+    pkg:
+      - acl
+    state: present
+    update_cache: yes
+
+- name: Create required folders & set permissions
+  become: true
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: vacloud
+    group: vacloud
+    mode: '0770'
+  loop:
+    - /home/vacloud/bin
+    - /home/vacloud/ethereum
+    - /home/vacloud/ethereum/geth
+    - /home/vacloud/ethereum/prysm
+
+- name: Check if eth binaries exists on VM
+  become: true
+  stat:
+    path: /usr/bin/{{ item.filename }}
+  register: eth_binary_info
+  loop:
+    - {name: geth, filename: 'geth-{{ geth_version }}'}
+    - {name: prysm, filename: 'prysm-{{ prysm_version }}'}
+
+- name: Install eth binaries
+  include_tasks: install_{{ item.item.name }}.yml
+  when: not item.stat.exists
+  vars:
+    ansible_become: true
+  loop: '{{eth_binary_info.results}}'
+  loop_control:
+    label: "{{ item.invocation.module_args.path }}"
+
+- name: Copy eth systemd services
+  become: true
+  template:
+    src: '{{ item }}.service.j2'
+    dest: /etc/systemd/system/{{ item }}.service
+    mode: '0644'
+  notify: Restart {{ item }} service
+  loop:
+    - geth
+    - prysm
+
+- name: Start eth service
+  become: true
+  systemd:
+    name: '{{ item }}'
+    enabled: true
+    state: started
+    daemon_reload: true
+  loop:
+    - geth
+    - prysm
+
+- name: Generate Geth-Prysm JWT Token 
+  become: true
+  become_user: vacloud
+  command: prysm-{{ prysm_version }} generate-auth-secret --output-file /home/vacloud/ethereum/prysm/jwt.hex 
+  args:
+    creates: /home/vacloud/ethereum/prysm/jwt.hex
+
+- name: Install prometheus
+  include_tasks: install_prometheus.yml
+
+- name: Install grafana
+  include_tasks: install_grafana.yml

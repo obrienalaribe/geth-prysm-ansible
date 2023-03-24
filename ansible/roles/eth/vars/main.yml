@@ -1,0 +1,7 @@
+geth_version: 1.11.4-7e3b149b
+prysm_version: 3.2.2
+
+prysm_fee_recipient: '0x273Ee12d4ea229770d37D3abcD10f4E42d682CEf'
+prysm_checkpoint_url: 'https://sync.invis.tools'
+
+monitoring_ip:  86.184.240.65

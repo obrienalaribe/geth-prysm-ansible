@@ -1,0 +1,7 @@
+geth_url_filename: geth-linux-amd64-{{ geth_version }}
+geth_url: https://gethstore.blob.core.windows.net/builds/{{ geth_url_filename }}.tar.gz
+geth_datadir: /home/vacloud/ethereum/geth
+
+prysm_url: https://github.com/prysmaticlabs/prysm/releases/download/v{{ prysm_version }}/beacon-chain-v{{ prysm_version }}-linux-amd64
+prysm_jwt: /home/vacloud/ethereum/prysm/jwt.hex
+prysm_datadir: /home/vacloud/ethereum/prysm

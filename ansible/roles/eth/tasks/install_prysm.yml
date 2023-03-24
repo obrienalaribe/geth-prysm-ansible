@@ -1,0 +1,8 @@
+---
+- name: Download prysm version {{ prysm_version }}
+  get_url:
+    url: '{{ prysm_url }}'
+    dest: /usr/bin/prysm-{{ prysm_version }}
+    owner: vacloud
+    group: vacloud
+    mode: '0700'

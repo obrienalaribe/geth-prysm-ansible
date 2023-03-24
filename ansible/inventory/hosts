@@ -1,0 +1,6 @@
+[my_eth_node:vars]
+ansible_ssh_private_key_file=/home/ansible/geth-prysm-ansible/ansible/inventory/<key>.pem
+ansible_ssh_user=ubuntu
+
+[my_eth_node]
+34.245.169.22

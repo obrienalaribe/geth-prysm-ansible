@@ -1,0 +1,32 @@
+---
+- name: Create geth download directory
+  file:
+    path: /tmp/geth_download
+    state: directory
+    owner: vacloud
+    group: vacloud
+    mode: '0774'
+
+- name: Download and unarchive geth version {{ geth_version }}
+  unarchive:
+    src: '{{ geth_url }}'
+    dest: /tmp/geth_download
+    remote_src: yes
+
+- name: Copy geth to bin directory
+  copy:
+    src: /tmp/geth_download/{{ geth_url_filename }}/geth
+    dest: /usr/bin/geth-{{ geth_version }}
+    owner: vacloud
+    group: vacloud
+    mode: '0700'
+    remote_src: true
+
+- name: Remove geth download directory
+  file:
+    path: /tmp/geth_download
+    state: absent
+
+# Future: 
+#   - MD5 checksum
+#   - GPG signatures

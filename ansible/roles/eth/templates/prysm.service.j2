@@ -1,0 +1,15 @@
+[Unit]
+Description=Eth2 Consensus Client
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=vacloud
+WorkingDirectory={{ prysm_datadir }}
+ExecStart=/usr/bin/prysm-{{ prysm_version }} --execution-endpoint=http://localhost:8551 --jwt-secret={{ prysm_jwt }} --datadir={{ prysm_datadir }}  --suggested-fee-recipient={{ prysm_fee_recipient }} --accept-terms-of-use --checkpoint-sync-url={{ prysm_checkpoint_url }} --genesis-beacon-api-url={{ prysm_checkpoint_url }}
+
+
+[Install]
+WantedBy=multi-user.target

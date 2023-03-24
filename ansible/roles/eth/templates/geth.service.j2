@@ -1,0 +1,14 @@
+[Unit]
+Description=Eth2 Execution Client
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=vacloud
+WorkingDirectory={{ geth_datadir }}
+ExecStart=/usr/bin/geth-{{ geth_version }} --datadir {{ geth_datadir }} --authrpc.jwtsecret {{ prysm_jwt }} --http --http.addr 0.0.0.0 --http.vhosts '*' --http.api eth,net,admin --metrics --metrics.addr 127.0.0.1 
+
+[Install]
+WantedBy=multi-user.target

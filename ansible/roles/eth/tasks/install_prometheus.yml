@@ -1,0 +1,38 @@
+- name: Install required packages
+  become: true
+  apt:
+    pkg:
+      - prometheus
+      - prometheus-node-exporter
+    state: present
+    update_cache: yes
+
+- name: Copy prometheus systemd service
+  become: true
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    mode: '0644'
+  notify: Restart prometheus service
+
+- name: Copy prometheus config file
+  become: true
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    mode: '0644'
+  notify: Restart prometheus service
+
+- name: Enable prometheus systemd service
+  become: true
+  systemd:
+      name: prometheus
+      enabled: true
+
+- name: Enable prometheus-node-exporter systemd service
+  become: true
+  systemd:
+      name: prometheus-node-exporter
+      enabled: true
+      state: started
+      
